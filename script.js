@@ -1,58 +1,49 @@
-let jogador = 0
-let jogo_andamento = 1 // "1" indica que o jogo esta em andamento
-var tabuleiro = [0, 0, 0, 0, 0, 0, 0, 0, 0,]
-let vitorias_x = 0
-let vitorias_y = 0
-
-function iniciarJogo() 
-{
-    for (let i = 1; i < 10; i++) 
-    {
-        document.getElementById(i).innerHTML = "";
-    }
-
-    document.getElementById("botao").innerHTML = "Reiniciar jogo"
-}
-
-function jogada(posicao) 
-{
-    if (jogo_andamento == 1) 
-    {
-
-        if (document.getElementById(posicao).innerHTML == "") 
-        {
-
-            if (jogador == 0) 
-            {
-                document.getElementById(posicao).innerHTML = "X"
-                jogador = 1
-                tabuleiro[posicao - 1] = "X"
-            }
-            else 
-            {
-                document.getElementById(posicao).innerHTML = "O"
-                jogador = 0
-                tabuleiro[posicao - 1] = "O"
-            }
+document.addEventListener("DOMContentLoaded", () => {
+    const tabuleiro = document.getElementById("tabuleiro");
+    const celulas = document.querySelectorAll(".celula");
+    let jogadorAtual = "X";
+    let estadoJogo = ["", "", "", "", "", "", "", "", ""];
+  
+    celulas.forEach((celula, index) => {
+      celula.addEventListener("click", () => {
+        if (estadoJogo[index] === "" && !verificarVencedor()) {
+          estadoJogo[index] = jogadorAtual;
+          celula.textContent = jogadorAtual;
+          if (verificarVencedor()) {
+            alert(`O jogador ${jogadorAtual} venceu!`);
+          } else if (!estadoJogo.includes("")) {
+            alert("Empate!");
+          } else {
+            jogadorAtual = jogadorAtual === "X" ? "O" : "X";
+          }
         }
-        VerificarVitoria()
-        mostrar();
-    }
-}
-
-
-function VerificarVitoria() 
-{
-    // Verifica se há uma linha vencedora
-    for (let i = 0; i < 9; i += 3) 
-    {
-        if (tabuleiro[i] != 0 && tabuleiro[i] == tabuleiro[i + 1] && tabuleiro[i + 1] == tabuleiro[i + 2]) 
-        {
-            alert([jogador], "ganhou");
+      });
+    });
+  
+    function verificarVencedor() {
+      const condicoesVitoria = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+  
+      for (let condicao of condicoesVitoria) {
+        const [a, b, c] = condicao;
+        if (
+          estadoJogo[a] !== "" &&
+          estadoJogo[a] === estadoJogo[b] &&
+          estadoJogo[b] === estadoJogo[c]
+        ) {
+          return true;
         }
+      }
+  
+      return false;
     }
-}
-
-function mostrar() {
-    document.getElementById("mostrar").innerHTML = tabuleiro;
-} 
+  });
+  
